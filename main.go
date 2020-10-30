@@ -1,17 +1,21 @@
 package main
 
 import (
+	"fmt"
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"yu-croco.com/DynamodbStreamGolangLambda/app/adapter/converter"
 )
 
-type Response struct {
-	Message string `json:"message"`
-}
+func Handler(request events.DynamoDBEvent) error {
+	records, convertErr := converter.ToModel(request)
+	if convertErr != nil {
+		return convertErr
+	}
 
-func Handler() (Response, error) {
-	return Response{
-		Message: "Go Serverless v1.0! Your function executed successfully!",
-	}, nil
+	fmt.Print(records)
+
+	return nil
 }
 
 func main() {
